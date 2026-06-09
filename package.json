@@ -1,0 +1,17 @@
+{
+  "name": "aquaflow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AquaFlow — multi-tenant water distribution management system for the UAE market",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "sheets:init": "npm run sheets:init --prefix server",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
