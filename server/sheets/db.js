@@ -5,6 +5,11 @@ import { nanoid } from 'nanoid';
 import { getSheetsClient, getSpreadsheetId } from './client.js';
 import { SHEETS } from './schema.js';
 
+// MOCK_SHEETS=1 swaps Google Sheets for an in-memory store — useful for
+// local development and tests without service account credentials.
+const MOCK = process.env.MOCK_SHEETS === '1';
+const memStore = Object.fromEntries(Object.keys(SHEETS).map((name) => [name, []]));
+
 function headersFor(sheetName) {
   const headers = SHEETS[sheetName];
   if (!headers) throw new Error(`Unknown sheet: ${sheetName}`);
@@ -34,6 +39,10 @@ export function nowIso() {
 /** Return all records in a sheet as objects. Optional predicate filter. */
 export async function getAll(sheetName, predicate) {
   const headers = headersFor(sheetName);
+  if (MOCK) {
+    const records = memStore[sheetName].map((r) => ({ ...r }));
+    return predicate ? records.filter(predicate) : records;
+  }
   const sheets = getSheetsClient();
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: getSpreadsheetId(),
@@ -64,6 +73,12 @@ export async function insert(sheetName, data) {
   if (headers.includes('id') && !record.id) record.id = newId();
   if (headers.includes('created_at') && !record.created_at) record.created_at = nowIso();
 
+  if (MOCK) {
+    const normalized = rowToObject(headers, objectToRow(headers, record));
+    memStore[sheetName].push(normalized);
+    return normalized;
+  }
+
   const sheets = getSheetsClient();
   await sheets.spreadsheets.values.append({
     spreadsheetId: getSpreadsheetId(),
@@ -78,6 +93,12 @@ export async function insert(sheetName, data) {
 /** Update a record by id with partial fields. Returns the updated record or null. */
 export async function updateById(sheetName, id, updates) {
   const headers = headersFor(sheetName);
+  if (MOCK) {
+    const record = memStore[sheetName].find((r) => r.id === id);
+    if (!record) return null;
+    Object.assign(record, updates, { id: record.id });
+    return { ...record };
+  }
   const sheets = getSheetsClient();
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: getSpreadsheetId(),

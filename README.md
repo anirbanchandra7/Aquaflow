@@ -31,12 +31,15 @@ Multi-tenant water distribution management system for the UAE market.
 
 Each tab is one table; row 1 is the header row.
 
-- **Distributors** — id, company_name, trade_license, registration_doc_url, contact_email, contact_phone, status, created_at
+- **Distributors** — id, company_name, trade_license, registration_doc_url, contact_email, contact_phone, emirate, status, created_at
 - **Admins** — id, distributor_id, name, email, password_hash, status
 - **Customers** — id, distributor_id, name, phone, address, emirate, type[one_time|subscription], subscription_frequency, subscription_qty, last_order_date, next_followup_date, notes, created_at
 - **Drivers** — id, distributor_id, name, phone, email, password_hash, status[active|inactive], is_live[true|false], created_at
 - **Orders** — id, distributor_id, customer_id, driver_id, type[one_time|subscription], qty, status[pending|assigned|in_transit|delivered|cancelled], scheduled_date, delivered_at, notes, created_at
-- **SupportTickets** — id, distributor_id, raised_by_admin_id, subject, description, status[open|in_progress|resolved], created_at, resolved_at
+- **SupportTickets** — id, distributor_id, raised_by_admin_id, subject, description, status[open|in_progress|resolved], created_at, resolved_at, resolution_note
+
+> Tip: set `MOCK_SHEETS=1` in `server/.env` to run the API against an
+> in-memory store (no Google credentials needed) during local development.
 
 ## Setup
 

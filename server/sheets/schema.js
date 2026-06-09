@@ -9,6 +9,7 @@ export const SHEETS = {
     'registration_doc_url',
     'contact_email',
     'contact_phone',
+    'emirate',
     'status',
     'created_at',
   ],
@@ -68,6 +69,7 @@ export const SHEETS = {
     'status', // open | in_progress | resolved
     'created_at',
     'resolved_at',
+    'resolution_note',
   ],
 };
 
