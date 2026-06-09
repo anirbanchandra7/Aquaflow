@@ -15,7 +15,7 @@ router.use(verifyToken, requireRole(ROLES.ADMIN));
 // POST           /support-tickets   → raise a ticket to super admin
 
 router.get('/health', (req, res) =>
-  res.json({ scope: 'distributor', distributor_id: req.user.distributor_id, ok: true })
+  res.json({ scope: 'distributor', distributorId: req.user.distributorId, ok: true })
 );
 
 export default router;
